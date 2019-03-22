@@ -8,8 +8,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
-	ct "github.com/cvhariharan/Data-Models/customtype"
+	ct "github.com/cvhariharan/Utils/customtype"
 	"github.com/cvhariharan/Utils/utils"
 	"github.com/joho/godotenv"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v5"
@@ -22,10 +23,12 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	data := decodeRequest(r.Body)
 	username, userOk := data["username"]
 	password, passOk := data["password"]
-	if userOk && passOk {
+	email, emailOk := data["email"]
+	if userOk && passOk && emailOk {
 		user := ct.User{
 			FName: data["fname"].(string),
 			LName: data["lname"].(string),
+			Email: email.(string),
 			UName: username.(string),
 		}
 		user.CreatePassword(password.(string))
@@ -73,10 +76,10 @@ func main() {
 	if e != nil {
 		log.Fatal(e)
 	}
-
-	url := os.Getenv("DBURL")
+	endpoints := os.Getenv("DBURL")
+	url := strings.Split(endpoints, ",")
 	s, err := r.Connect(r.ConnectOpts{
-		Address: url, // endpoint without http
+		Addresses: url, // endpoint without http
 	})
 	if err != nil {
 		log.Fatalln(err)
