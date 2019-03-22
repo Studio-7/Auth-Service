@@ -20,18 +20,20 @@ var session *r.Session
 
 // signupHandler requires atleast fname, lname, username, password
 func signupHandler(w http.ResponseWriter, r *http.Request) {
-	data := decodeRequest(r.Body)
-	username, userOk := data["username"]
-	password, passOk := data["password"]
-	email, emailOk := data["email"]
-	if userOk && passOk && emailOk {
+	r.ParseForm()
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+	fname := r.Form.Get("fname")
+	lname := r.Form.Get("lname")
+	email := r.Form.Get("email")
+	if username != "" && password != "" && fname != "" && lname != "" && email != "" {
 		user := ct.User{
-			FName: data["fname"].(string),
-			LName: data["lname"].(string),
-			Email: email.(string),
-			UName: username.(string),
+			FName: fname,
+			LName: lname,
+			UName: username,
+			Email: email,
 		}
-		user.CreatePassword(password.(string))
+		user.CreatePassword(password)
 		jwt := utils.UserSignup(user, session)
 		if jwt == "" {
 			fmt.Fprint(w, "Error: Username exists")
@@ -45,10 +47,10 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 
 // loginHandler requires username and password
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	data := decodeRequest(r.Body)
-	username, userOk := data["username"].(string)
-	password, passOk := data["password"].(string)
-	if userOk && passOk {
+	r.ParseForm()
+	username := r.Form.Get("username")
+	password := r.Form.Get("password")
+	if username != "" && password != "" {
 		jwt := utils.UserLogin(username, password, session)
 		if jwt == "" {
 			fmt.Fprint(w, "Error: Could not authenticate the user. Check username and password or try again later.")
