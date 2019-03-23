@@ -18,7 +18,23 @@ import (
 
 var session *r.Session
 
-// signupHandler requires atleast fname, lname, username, password
+func followUserHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	var jsonString string
+	followee := r.Form.Get("followee")
+	follower := r.Form.Get("username")
+	w.Header().Set("Content-Type", "application/json")
+	if utils.FollowUser(follower, followee, session) {
+		jsonString = `{ "result": "success", "token" : "`
+	} else {
+		jsonString = `{ "error": "could not follow", "token" : "`
+	}
+	jwt := utils.GenerateJWT(followee, session)
+	jsonString += jwt + "\" }"
+	w.Write([]byte(jsonString))
+}
+
+// signupHandler requires atleast fname, lname, username, password, email
 func signupHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	username := r.Form.Get("username")
@@ -26,6 +42,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	fname := r.Form.Get("fname")
 	lname := r.Form.Get("lname")
 	email := r.Form.Get("email")
+	w.Header().Set("Content-Type", "application/json")
 	if username != "" && password != "" && fname != "" && lname != "" && email != "" {
 		user := ct.User{
 			FName: fname,
@@ -36,12 +53,12 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		user.CreatePassword(password)
 		jwt := utils.UserSignup(user, session)
 		if jwt == "" {
-			fmt.Fprint(w, "Error: Username exists")
+			fmt.Fprint(w, `{ "error": "username exists" }`)
 		} else {
 			fmt.Fprint(w, jwt)
 		}
 	} else {
-		fmt.Fprint(w, "Error: Check request params")
+		fmt.Fprint(w, `{ "error": "check request params" }`)
 	}
 }
 
@@ -53,12 +70,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	if username != "" && password != "" {
 		jwt := utils.UserLogin(username, password, session)
 		if jwt == "" {
-			fmt.Fprint(w, "Error: Could not authenticate the user. Check username and password or try again later.")
+			fmt.Fprint(w, `{ "error": "could not authenticate, check username or password and try again later" }`)
 		} else {
 			fmt.Fprint(w, jwt)
 		}
 	} else {
-		fmt.Fprint(w, "Error: Check request params")
+		fmt.Fprint(w, `{ "error": "check request params" }`)
 	}
 }
 
@@ -90,5 +107,6 @@ func main() {
 	port := ":" + os.Getenv("PORT")
 	http.HandleFunc("/signup", signupHandler)
 	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/followuser", utils.AuthMiddleware(followUserHandler, session))
 	log.Fatal(http.ListenAndServe(port, nil))
 }
