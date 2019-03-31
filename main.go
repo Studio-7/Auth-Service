@@ -105,8 +105,8 @@ func main() {
 	}
 	session = s
 	port := ":" + os.Getenv("PORT")
-	http.HandleFunc("/signup", signupHandler)
-	http.HandleFunc("/login", loginHandler)
-	http.HandleFunc("/followuser", utils.AuthMiddleware(followUserHandler, session))
+	http.HandleFunc("/user/signup", signupHandler)
+	http.HandleFunc("/user/login", loginHandler)
+	http.HandleFunc("/user/followuser", utils.AuthMiddleware(followUserHandler, session))
 	log.Fatal(http.ListenAndServe(port, nil))
 }
