@@ -20,6 +20,8 @@ RUN apt-get install git -y
 RUN apt-get install libexif-dev -y
 RUN go get github.com/xiam/exif
 
+RUN go get github.com/sendgrid/sendgrid-go
+
 # utils library
 RUN go get github.com/cvhariharan/Utils
 
