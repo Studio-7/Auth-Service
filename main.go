@@ -42,7 +42,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	fname := r.Form.Get("fname")
 	lname := r.Form.Get("lname")
 	email := r.Form.Get("email")
-	w.Header().Set("Content-Type", "application/json")
+	
 	if username != "" && password != "" && fname != "" && lname != "" && email != "" {
 		user := ct.User{
 			FName: fname,
