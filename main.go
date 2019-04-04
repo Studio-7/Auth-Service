@@ -42,7 +42,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	fname := r.Form.Get("fname")
 	lname := r.Form.Get("lname")
 	email := r.Form.Get("email")
-	
+	w.Header().Set("Content-Type", "application/json")
 	if username != "" && password != "" && fname != "" && lname != "" && email != "" {
 		user := ct.User{
 			FName: fname,
@@ -53,9 +53,9 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		user.CreatePassword(password)
 		jwt := utils.UserSignup(user, session)
 		if jwt == "" {
-			fmt.Fprint(w, `{ "error": "username exists" }`)
+			fmt.Fprint(w, `{ "error": "username or email exists" }`)
 		} else {
-			fmt.Fprint(w, jwt)
+			fmt.Fprint(w, `{ "result": "success", "jwt": "` + jwt + "\"}")
 		}
 	} else {
 		fmt.Fprint(w, `{ "error": "check request params" }`)
@@ -65,6 +65,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 // loginHandler requires username and password
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	w.Header().Set("Content-Type", "application/json")
 	username := r.Form.Get("username")
 	password := r.Form.Get("password")
 	if username != "" && password != "" {
@@ -72,7 +73,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		if jwt == "" {
 			fmt.Fprint(w, `{ "error": "could not authenticate, check username or password and try again later" }`)
 		} else {
-			fmt.Fprint(w, jwt)
+			fmt.Fprint(w, `{ "result": "success", "jwt": "` + jwt + "\"}")
 		}
 	} else {
 		fmt.Fprint(w, `{ "error": "check request params" }`)
