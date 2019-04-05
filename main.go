@@ -55,7 +55,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 		if jwt == "" {
 			fmt.Fprint(w, `{ "error": "username or email exists" }`)
 		} else {
-			fmt.Fprint(w, `{ "result": "success", "jwt": "` + jwt + "\"}")
+			fmt.Fprint(w, `{ "result": "success", "token": "` + jwt + "\"}")
 		}
 	} else {
 		fmt.Fprint(w, `{ "error": "check request params" }`)
@@ -73,7 +73,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		if jwt == "" {
 			fmt.Fprint(w, `{ "error": "could not authenticate, check username or password and try again later" }`)
 		} else {
-			fmt.Fprint(w, `{ "result": "success", "jwt": "` + jwt + "\"}")
+			fmt.Fprint(w, `{ "result": "success", "token": "` + jwt + "\"}")
 		}
 	} else {
 		fmt.Fprint(w, `{ "error": "check request params" }`)
