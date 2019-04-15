@@ -47,3 +47,22 @@ Success
 Error
 {"error" : "ERROR"}
 ```
+  
+**Endpoint** - '/user/updatedetails'  
+Required 
+- *username* string: Username of the user for which details are to be updated
+- *password* string: Password of the user for which details are to be updated
+- *newUsername* string (optional): New username for the user
+- *newPassword* string (optional): New password for the user
+- *fname* string (optional): New First Name of the user
+- *lname* string (optional): New Last Name of the user
+- *email* string (optional): New E-mail of the user
+
+Response: Returns  on success
+```json
+{ "result": "success" }
+```
+else returns error.
+```json
+{"error" : "ERROR"}
+```
