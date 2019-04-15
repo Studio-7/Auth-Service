@@ -89,11 +89,11 @@ func updateDetails(w http.ResponseWriter, r *http.Request) {
 	user.Email = email
 	user.CreatePassword(newPassword)
 
-	conf := user.UpdateDetails(username, password, session)
+	conf := utils.UpdateDetails(username, user, session)
 	if conf == "" {
-		fmt.Fprint(w, `{"Success", "User details updated"}`)
+		fmt.Fprint(w, `{"result": "success"}`)
 	} else {
-		fmt.Fprint(w, conf)
+		fmt.Fprint(w, `{"result": "error"}`)
 	}
 
 }
