@@ -8,9 +8,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/cvhariharan/Utils/utils"
 	"github.com/joho/godotenv"
+	"github.com/cvhariharan/Utils/utils"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v5"
 )
 
@@ -50,6 +49,6 @@ func main() {
 	http.HandleFunc("/user/signup", signupHandler)
 	http.HandleFunc("/user/login", loginHandler)
 	http.HandleFunc("/user/followuser", utils.AuthMiddleware(followUserHandler, session))
-	http.HandleFunc("/user/updatedetails", updateDetails)
+	// http.HandleFunc("/user/updatedetails", updateDetails)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
