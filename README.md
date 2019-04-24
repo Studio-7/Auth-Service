@@ -58,6 +58,25 @@ Error
     "token": "eWFrb21ha2F6YTE=.Z2JhaUNNUkFqV3doVEhjdGN1QXhoeEtRRkRhRnBMU2o=.ekltc1hQa2JTdWdQc0luYSs2cUpIaTlJZ2tOQ2FpbFJJdE5SQ3ovQnR0UT0="
 }
 ```
+
+**Endpoint** - '/user/unfollowuser'  
+Required  
+- *token* string: A valid JSON Web Token. A JWT is only valid for one API call.  
+- *username* string
+- *followee* string: Username of the user to unfollow  
+Response: Returns  on success
+```json
+Success
+{
+    "result": "success",
+    "token": "eWFrb21ha2F6YTE=.Z2JhaUNNUkFqV3doVEhjdGN1QXhoeEtRRkRhRnBMU2o=.ekltc1hQa2JTdWdQc0luYSs2cUpIaTlJZ2tOQ2FpbFJJdE5SQ3ovQnR0UT0="
+}
+Error
+{
+    "error" : "ERROR",
+    "token": "eWFrb21ha2F6YTE=.Z2JhaUNNUkFqV3doVEhjdGN1QXhoeEtRRkRhRnBMU2o=.ekltc1hQa2JTdWdQc0luYSs2cUpIaTlJZ2tOQ2FpbFJJdE5SQ3ovQnR0UT0="
+}
+```
   
 **Endpoint** - '/user/updatedetails'  
 Required 
