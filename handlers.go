@@ -113,7 +113,23 @@ func followUserHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		jsonString = `{ "error": "could not follow", "token" : "`
 	}
-	jwt := utils.GenerateJWT(followee, session)
+	jwt := utils.GenerateJWT(follower, session)
+	jsonString += jwt + "\" }"
+	w.Write([]byte(jsonString))
+}
+
+func unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	var jsonString string
+	followee := r.Form.Get("followee")
+	follower := r.Form.Get("username")
+	w.Header().Set("Content-Type", "application/json")
+	if utils.UnfollowUser(follower, followee, session) {
+		jsonString = `{ "result": "success", "token" : "`
+	} else {
+		jsonString = `{ "error": "could not unfollow", "token" : "`
+	}
+	jwt := utils.GenerateJWT(follower, session)
 	jsonString += jwt + "\" }"
 	w.Write([]byte(jsonString))
 }
