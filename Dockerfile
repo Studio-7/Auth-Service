@@ -21,6 +21,7 @@ RUN apt-get install libexif-dev -y
 RUN go get github.com/xiam/exif
 
 RUN go get github.com/sendgrid/sendgrid-go
+RUN go get github.com/futurenda/google-auth-id-token-verifier
 
 # utils library
 RUN go get github.com/cvhariharan/Utils
