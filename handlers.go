@@ -83,6 +83,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			fmt.Println(claimSet)
 			u := utils.GetUser(username, session)
+			fmt.Println(u)
 			if u.Email != claimSet.Email {
 				// If the email id does not match the token email
 				fmt.Fprint(w, `{ "error": "Not a valid email id" }`)
