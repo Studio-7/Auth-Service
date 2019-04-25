@@ -82,12 +82,13 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			}
 			fmt.Println(claimSet)
-			if username != claimSet.Email {
+			u := utils.GetUser(username, session)
+			if u.Email != claimSet.Email {
 				// If the email id does not match the token email
 				fmt.Fprint(w, `{ "error": "Not a valid email id" }`)
 				return
 			}
-			username = claimSet.Email
+			
 		}
 	}
 	if username != "" && password != "" {
