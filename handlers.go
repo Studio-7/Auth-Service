@@ -7,6 +7,7 @@ import (
 	ct "github.com/cvhariharan/Utils/customtype"
 	"github.com/cvhariharan/Utils/utils"
 	"os"
+	"encoding/json"
 )
 
 // signupHandler requires atleast fname, lname, username, password, email
@@ -133,6 +134,26 @@ func unfollowUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	jwt := utils.GenerateJWT(follower, session)
 	jsonString += jwt + "\" }"
+	w.Write([]byte(jsonString))
+}
+
+func getprofile(w http.ResponseWriter, r *http.Request) {
+	var result interface{}
+	var jsonString string
+	r.ParseForm()
+	w.Header().Set("Content-Type", "application/json")
+	profilename := r.Form.Get("profilename")
+	username := r.Form.Get("username")
+
+	result = utils.GetProfile(profilename, session)
+	if result == nil {
+		// If res is empty
+		jsonString = `{ "error": "could not locate the profile", "token" : "`
+	} else {
+		j, _ := json.Marshal(result)
+		jsonString = `{ "result": ` + string(j) + `, "token": "` + utils.GenerateJWT(username, session) + "\"}"
+	}
+
 	w.Write([]byte(jsonString))
 }
 

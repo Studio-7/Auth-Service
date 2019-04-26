@@ -50,6 +50,7 @@ func main() {
 	http.HandleFunc("/user/login", loginHandler)
 	http.HandleFunc("/user/followuser", utils.AuthMiddleware(followUserHandler, session))
 	http.HandleFunc("/user/unfollowuser", utils.AuthMiddleware(unfollowUserHandler, session))
+	http.HandleFunc("/user/getprofile", utils.AuthMiddleware(getprofile, session))
 	// http.HandleFunc("/user/updatedetails", updateDetails)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
