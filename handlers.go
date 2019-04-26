@@ -8,7 +8,28 @@ import (
 	"github.com/cvhariharan/Utils/utils"
 	"os"
 	"encoding/json"
+	"io"
+	"io/ioutil"
+	"image"
+	"mime"
+	"strconv"
+	"time"
 )
+
+// Guess image format from gif/jpeg/png/webp
+func guessImageFormat(r io.Reader) (format string, err error) {
+	_, format, err = image.DecodeConfig(r)
+	return
+}
+
+// Guess image mime types from gif/jpeg/png/webp
+func guessImageMimeTypes(r io.Reader) string {
+	format, _ := guessImageFormat(r)
+	if format == "" {
+		return ""
+	}
+	return mime.TypeByExtension("." + format)
+}
 
 // signupHandler requires atleast fname, lname, username, password, email
 func signupHandler(w http.ResponseWriter, r *http.Request) {
@@ -152,6 +173,45 @@ func getprofile(w http.ResponseWriter, r *http.Request) {
 	} else {
 		j, _ := json.Marshal(result)
 		jsonString = `{ "result": ` + string(j) + `, "token": "` + utils.GenerateJWT(username, session) + "\"}"
+	}
+
+	w.Write([]byte(jsonString))
+}
+
+func uploadProfilePic(w http.ResponseWriter, r *http.Request) {
+	var imgloc string
+	var jsonString string
+	r.ParseMultipartForm(32 << 20)
+	username := r.FormValue("username")
+
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		imgloc = ""
+	} else {
+		format := guessImageMimeTypes(file)
+		timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+
+		tempFile, err := os.OpenFile("./temp-images/upload-"+timestamp+format, os.O_RDWR|os.O_CREATE, 0755)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer tempFile.Close()
+
+		fileBytes, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		tempFile.Write(fileBytes)
+		imgloc = tempFile.Name() + format
+	}
+
+	if utils.UpdateProfilePic(username, imgloc, session) {
+		jsonString = `{ "result": "successfully updated profile picture", "token": "` + utils.GenerateJWT(username, session) + "\"}"
+	} else {
+		jsonString = `{ "error": "could not update", "token": "` + utils.GenerateJWT(username, session) + "\"}"
 	}
 
 	w.Write([]byte(jsonString))
