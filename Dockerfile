@@ -26,6 +26,7 @@ RUN go get github.com/futurenda/google-auth-id-token-verifier
 # utils library
 RUN go get github.com/cvhariharan/Utils
 RUN go get github.com/kelvins/geocoder
+RUN go get github.com/codingsince1985/geo-golang
 
 WORKDIR $HOME/go/src/app
 COPY . .
