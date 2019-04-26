@@ -170,3 +170,22 @@ else returns error.
 ```json
 {"error" : "ERROR"}
 ```
+
+**Endpoint** - '/user/unfollowuser'  
+Required  
+- *token* string: A valid JSON Web Token. A JWT is only valid for one API call.  
+- *username* string
+- *image* file: New profile picture 
+Response: Returns  on success
+```json
+Success
+{
+    "result": "successfully updated profile picture",
+    "token": "eWFrb21ha2F6YTE=.Z2JhaUNNUkFqV3doVEhjdGN1QXhoeEtRRkRhRnBMU2o=.ekltc1hQa2JTdWdQc0luYSs2cUpIaTlJZ2tOQ2FpbFJJdE5SQ3ovQnR0UT0="
+}
+Error
+{
+    "error" : "ERROR",
+    "token": "eWFrb21ha2F6YTE=.Z2JhaUNNUkFqV3doVEhjdGN1QXhoeEtRRkRhRnBMU2o=.ekltc1hQa2JTdWdQc0luYSs2cUpIaTlJZ2tOQ2FpbFJJdE5SQ3ovQnR0UT0="
+}
+```
